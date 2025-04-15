@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Veiculo {
+  id Int @id @default(autoincrement())
+  modelo String
+  marca String
+  placa String @unique
+  cor String?
+  ano Int?
+  estadias Estadia[] // Relacionamento com Estadia
+}
+
+model Estadia {
+  id Int @id @default(autoincrement())
+  veiculoId Int
+  entrada DateTime @default(now()) // Gerado automaticamente
+  saida DateTime? // Pode ser nulo
+  valorHora Decimal @db.Decimal(10,2)
+  valorTotal Decimal? @db.Decimal(10,2) // Calculado na saída
+  veiculo Veiculo @relation(fields: [veiculoId], references: [id]) // Relacionamento com Veiculo
+}
